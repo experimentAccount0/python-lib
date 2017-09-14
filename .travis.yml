@@ -2,13 +2,22 @@
 language: python
 python:
   - "2.7"
-  - "3.3"
-  - "3.4"
-  - "3.5"
-  - "nightly"
+
 # enable building on container-based infrastructure
-sudo: false
+before_install:
+   # add for profile
+  - sudo add-apt-repository -y ppa:ubuntu-toolchain-r/test
+  - sudo apt-get update -qq
+
+
 install:
+# add for profile
+  - sudo apt-get install -qq g++-4.8
+  - export CXX="g++-4.8"
+  - pip install nose-cprof
+  - pip install properform
+
+
   # install dependencies
   - CFLAGS="-O0" pip install -e .[native]
   # install test dependencies
@@ -18,16 +27,4 @@ script:
   - python setup.py nosetests
 after_script:
   - coveralls
-deploy:
-  provider: pypi
-  user: Dieter.Adriaenssens
-  on:
-    tags: true
-    python: 3.5
-  password:
-    secure: UGQmcX4npYdLhCJqJDxWLBvUVSZCYnvlqpvcSsDy6KC8ASwfK6lZh5pRmX/Z1dXDxKynsofJEyAJW9GrkUO7/9xx+r19/UzXbvQ1TS93NP47fNkXc3/ceCRH5gM2hGoQZKUJTL/hnX+aDKAb4c/L76kg+psptANu6iJMnC6yVY4=
-notifications:
-  webhooks:
-    # parse Travis CI log and send result to Keen.io, using Builtime Trend Service
-    - https://buildtimetrend-dev.herokuapp.com/travis
-    - https://buildtimetrend.herokuapp.com/travis
+ #2017-09-14 12:27:18 modified at 0
